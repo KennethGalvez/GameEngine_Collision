@@ -4,6 +4,7 @@
 #include "Components.h"
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 class System {
 public:
@@ -163,3 +164,35 @@ public:
     }
 };
 
+class CollisionSystem : public System {
+public:
+    void run(SDL_Renderer* renderer) override {
+        
+    }
+
+    void run(entt::registry& registry, bool& isRunning) {
+        auto playerView = registry.view<PositionComponent, TextureComponent>(entt::exclude<FireComponent>);
+        auto fireView = registry.view<PositionComponent, FireComponent>();
+
+        for (auto playerEntity : playerView) {
+            auto& playerPos = playerView.get<PositionComponent>(playerEntity);
+            auto& playerTex = playerView.get<TextureComponent>(playerEntity);
+
+            SDL_Rect playerRect = {playerPos.x, playerPos.y, playerTex.width, playerTex.height};
+
+            for (auto fireEntity : fireView) {
+                auto& firePos = fireView.get<PositionComponent>(fireEntity);
+                auto& fire = fireView.get<FireComponent>(fireEntity);
+
+                if (fire.active) {
+                    SDL_Rect fireRect = {firePos.x, firePos.y, 50, 50}; // Tamaño fijo de los fuegos
+                    if (SDL_HasIntersection(&playerRect, &fireRect)) {
+                        std::cout << "Perdiste" << std::endl;
+                        isRunning = false; // Detener el juego
+                        return;
+                    }
+                }
+            }
+        }
+    }
+};

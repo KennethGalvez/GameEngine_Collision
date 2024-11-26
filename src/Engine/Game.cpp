@@ -33,10 +33,13 @@ void Game::update() {
     float deltaTime = (currentTime - lastTime) / 1000.0f; // Delta time en segundos
     lastTime = currentTime;
 
-    if (currentScene) {
+    if (currentScene && isRunning) {
         currentScene->update(deltaTime); // Pasa deltaTime a la escena
+    } else {
+        isRunning = false; // Detener el juego si isRunning es falso
     }
 }
+
 
 
 void Game::render() {

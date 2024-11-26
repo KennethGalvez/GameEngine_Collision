@@ -26,7 +26,9 @@ class DemoGame : public Game {
 
     void setup() override {
         std::cout << "HELLO WORLD" << std::endl;
-        sampleScene = new Scene("SAMPLE SCENE", registry);
+        //sampleScene = new Scene("SAMPLE SCENE", registry);
+        sampleScene = new Scene("SAMPLE SCENE", registry, &isRunning);
+
 
         // Fondo
         SDL_Texture* backgroundTexture = loadTexture("src/DemoGame/Fondo.png", renderer);
@@ -64,6 +66,8 @@ class DemoGame : public Game {
         sampleScene->renderSystems.push_back(new FireRenderSystem(fireTexture));
         sampleScene->updateSystems.push_back(new FireSystem());
 
+        //Colisiones
+        sampleScene->updateSystems.push_back(new CollisionSystem());
 
 
         setScene(sampleScene);

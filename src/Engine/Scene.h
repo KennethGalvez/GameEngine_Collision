@@ -12,7 +12,7 @@ class Entity;
 
 class Scene {
 public:
-    Scene(const std::string& name, entt::registry& registry);
+    Scene(const std::string& name, entt::registry& registry, bool* isRunning = nullptr);
     ~Scene();
 
     Entity* createEntity(const std::string& name);
@@ -28,5 +28,6 @@ public:
     std::vector<RenderSystem*> renderSystems;
     std::vector<System*> inputSystems; // Sistemas de input
     std::vector<System*> updateSystems; // Sistemas de actualización
+    bool* isRunning;
 
 };

@@ -3,10 +3,11 @@
 #include <iostream>
 #include <SDL2/SDL_image.h>
 
-Scene::Scene(const std::string& name, entt::registry& registry)
-    : name(name), registry(registry) {
+Scene::Scene(const std::string& name, entt::registry& registry, bool* isRunning)
+    : name(name), registry(registry), isRunning(isRunning) {
     std::cout << "Scene Initialized: " << name << std::endl;
 }
+
 
 Scene::~Scene() {
     std::cout << "Scene Destroyed: " << name << std::endl;
@@ -48,19 +49,23 @@ void Scene::processEvents(SDL_Event& event) {
 
 // Implementation of update
 void Scene::update(float deltaTime) {
-    
+    // Ejecutar sistemas de actualización lógica
     for (auto& system : updateSystems) {
         if (auto* fireSystem = dynamic_cast<FireSystem*>(system)) {
-            fireSystem->run(registry, deltaTime); // Ejecutar lógica de los fuegos
+            fireSystem->run(registry, deltaTime);
+        } else if (auto* collisionSystem = dynamic_cast<CollisionSystem*>(system)) {
+            collisionSystem->run(registry, *isRunning); // Usar *isRunning
         }
     }
 
+    // Ejecutar sistemas de renderizado que necesiten actualizarse
     for (auto& system : renderSystems) {
         if (auto* charSystem = dynamic_cast<CharacterRenderSystem*>(system)) {
-            charSystem->run(nullptr, registry, deltaTime); // Actualizar animación
+            charSystem->run(nullptr, registry, deltaTime);
         }
     }
 }
+
 
 
 
